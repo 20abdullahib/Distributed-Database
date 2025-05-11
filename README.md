@@ -254,19 +254,19 @@ Connect using:
 **Node 1 – NY Fragment:**
 
 ```bash
-docker exec project3-node1-1 mysql -uadmin -p123456 -e "CREATE DATABASE IF NOT EXISTS bookstore; USE bookstore; CREATE TABLE IF NOT EXISTS books (book_id INT PRIMARY KEY, title VARCHAR(255), author VARCHAR(255), genre VARCHAR(100), price DECIMAL(5,2)); CREATE TABLE IF NOT EXISTS locations (location_id INT PRIMARY KEY, city VARCHAR(100), address VARCHAR(255)); CREATE TABLE IF NOT EXISTS inventory_ny (inventory_id INT PRIMARY KEY, book_id INT, location_id INT, quantity INT);"
+docker exec project-node1-1 mysql -uadmin -p123456 -e "CREATE DATABASE IF NOT EXISTS bookstore; USE bookstore; CREATE TABLE IF NOT EXISTS books (book_id INT PRIMARY KEY, title VARCHAR(255), author VARCHAR(255), genre VARCHAR(100), price DECIMAL(5,2)); CREATE TABLE IF NOT EXISTS locations (location_id INT PRIMARY KEY, city VARCHAR(100), address VARCHAR(255)); CREATE TABLE IF NOT EXISTS inventory_ny (inventory_id INT PRIMARY KEY, book_id INT, location_id INT, quantity INT);"
 ```
 
 **Node 2 – LA Fragment:**
 
 ```bash
-docker exec project3-node2-1 mysql -uadmin -p123456 -e "CREATE DATABASE IF NOT EXISTS bookstore; USE bookstore; CREATE TABLE IF NOT EXISTS books (book_id INT PRIMARY KEY, title VARCHAR(255), author VARCHAR(255), genre VARCHAR(100), price DECIMAL(5,2)); CREATE TABLE IF NOT EXISTS locations (location_id INT PRIMARY KEY, city VARCHAR(100), address VARCHAR(255)); CREATE TABLE IF NOT EXISTS inventory_la (inventory_id INT PRIMARY KEY, book_id INT, location_id INT, quantity INT);"
+docker exec project-node2-1 mysql -uadmin -p123456 -e "SET GLOBAL super_read_only = OFF; SET GLOBAL read_only = OFF;CREATE DATABASE IF NOT EXISTS bookstore; USE bookstore; CREATE TABLE IF NOT EXISTS books (book_id INT PRIMARY KEY, title VARCHAR(255), author VARCHAR(255), genre VARCHAR(100), price DECIMAL(5,2)); CREATE TABLE IF NOT EXISTS locations (location_id INT PRIMARY KEY, city VARCHAR(100), address VARCHAR(255)); CREATE TABLE IF NOT EXISTS inventory_la (inventory_id INT PRIMARY KEY, book_id INT, location_id INT, quantity INT);"
 ```
 
 **Node 3 – Chicago Fragment:**
 
 ```bash
-docker exec project3-node3-1 mysql -uadmin -p123456 -e "CREATE DATABASE IF NOT EXISTS bookstore; USE bookstore; CREATE TABLE IF NOT EXISTS books (book_id INT PRIMARY KEY, title VARCHAR(255), author VARCHAR(255), genre VARCHAR(100), price DECIMAL(5,2)); CREATE TABLE IF NOT EXISTS locations (location_id INT PRIMARY KEY, city VARCHAR(100), address VARCHAR(255)); CREATE TABLE IF NOT EXISTS inventory_chicago (inventory_id INT PRIMARY KEY, book_id INT, location_id INT, quantity INT);"
+docker exec project-node3-1 mysql -uadmin -p123456 -e "SET GLOBAL super_read_only = OFF; SET GLOBAL read_only = OFF;CREATE DATABASE IF NOT EXISTS bookstore; USE bookstore; CREATE TABLE IF NOT EXISTS books (book_id INT PRIMARY KEY, title VARCHAR(255), author VARCHAR(255), genre VARCHAR(100), price DECIMAL(5,2)); CREATE TABLE IF NOT EXISTS locations (location_id INT PRIMARY KEY, city VARCHAR(100), address VARCHAR(255)); CREATE TABLE IF NOT EXISTS inventory_chicago (inventory_id INT PRIMARY KEY, book_id INT, location_id INT, quantity INT);"
 ```
 
 ---
@@ -276,14 +276,14 @@ docker exec project3-node3-1 mysql -uadmin -p123456 -e "CREATE DATABASE IF NOT E
 This data will appear in **all nodes** due to replication setup (assuming replication is configured correctly):
 
 ```bash
-docker exec project3-node1-1 mysql -uadmin -p123456 -e "USE bookstore; INSERT INTO books VALUES (1, '1984', 'George Orwell', 'Dystopian', 9.99), (2, 'Dune', 'Frank Herbert', 'Sci-Fi', 14.99), (3, 'The Hobbit', 'J.R.R. Tolkien', 'Fantasy', 12.99); INSERT INTO locations VALUES (1, 'New York', '123 Manhattan Ave'), (2, 'Los Angeles', '456 Sunset Blvd'), (3, 'Chicago', '789 Lake Shore Dr');"
+docker exec project-node1-1 mysql -uadmin -p123456 -e "USE bookstore; INSERT INTO books VALUES (1, '1984', 'George Orwell', 'Dystopian', 9.99), (2, 'Dune', 'Frank Herbert', 'Sci-Fi', 14.99), (3, 'The Hobbit', 'J.R.R. Tolkien', 'Fantasy', 12.99); INSERT INTO locations VALUES (1, 'New York', '123 Manhattan Ave'), (2, 'Los Angeles', '456 Sunset Blvd'), (3, 'Chicago', '789 Lake Shore Dr');"
 ```
 
 Test visibility on other nodes:
 
 ```bash
-docker exec project3-node2-1 mysql -uadmin -p123456 -e "SELECT * FROM bookstore.books;"
-docker exec project3-node3-1 mysql -uadmin -p123456 -e "SELECT * FROM bookstore.locations;"
+docker exec project-node2-1 mysql -uadmin -p123456 -e "SELECT * FROM bookstore.books;"
+docker exec project-node3-1 mysql -uadmin -p123456 -e "SELECT * FROM bookstore.locations;"
 ```
 
 ---
@@ -295,19 +295,19 @@ These go only to their local node:
 **Node 1:**
 
 ```bash
-docker exec project3-node1-1 mysql -uadmin -p123456 -e "USE bookstore; INSERT INTO inventory_ny VALUES (1, 1, 1, 10), (2, 2, 1, 5);"
+docker exec project-node1-1 mysql -uadmin -p123456 -e "USE bookstore; INSERT INTO inventory_ny VALUES (1, 1, 1, 10), (2, 2, 1, 5);"
 ```
 
 **Node 2:**
 
 ```bash
-docker exec project3-node2-1 mysql -uadmin -p123456 -e "USE bookstore; INSERT INTO inventory_la VALUES (3, 1, 2, 8), (4, 3, 2, 4);"
+docker exec project-node2-1 mysql -uadmin -p123456 -e "USE bookstore; INSERT INTO inventory_la VALUES (3, 1, 2, 8), (4, 3, 2, 4);"
 ```
 
 **Node 3:**
 
 ```bash
-docker exec project3-node3-1 mysql -uadmin -p123456 -e "USE bookstore; INSERT INTO inventory_chicago VALUES (5, 2, 3, 6), (6, 3, 3, 2);"
+docker exec project-node3-1 mysql -uadmin -p123456 -e "USE bookstore; INSERT INTO inventory_chicago VALUES (5, 2, 3, 6), (6, 3, 3, 2);"
 ```
 
 ---
@@ -327,19 +327,19 @@ You want 3 one-liner CMD commands to:
 **Node 1: Show NY Inventory**
 
 ```bash
-docker exec project3-node1-1 mysql -uadmin -p123456 -e "USE bookstore; SELECT * FROM inventory_ny;"
+docker exec project-node1-1 mysql -uadmin -p123456 -e "USE bookstore; SELECT * FROM inventory_ny;"
 ```
 
 **Node 2: Show LA Inventory**
 
 ```bash
-docker exec project3-node2-1 mysql -uadmin -p123456 -e "USE bookstore; SELECT * FROM inventory_la;"
+docker exec project-node2-1 mysql -uadmin -p123456 -e "USE bookstore; SELECT * FROM inventory_la;"
 ```
 
 **Node 3: Show Chicago Inventory**
 
 ```bash
-docker exec project3-node3-1 mysql -uadmin -p123456 -e "USE bookstore; SELECT * FROM inventory_chicago;"
+docker exec project-node3-1 mysql -uadmin -p123456 -e "USE bookstore; SELECT * FROM inventory_chicago;"
 ```
 
 #### Expected Output Example
@@ -392,7 +392,7 @@ You want to verify that:
 Run this on **Node 1**, assuming each inventory fragment is named correctly and exists locally (e.g., via replication or federated setup):
 
 ```bash
-docker exec project3-node1-1 mysql -uadmin -p123456 -e "USE bookstore; SELECT b.title, t.location_id, t.quantity FROM books b JOIN (SELECT book_id, location_id, quantity FROM inventory_ny UNION ALL SELECT book_id, location_id, quantity FROM inventory_la UNION ALL SELECT book_id, location_id, quantity FROM inventory_chicago) AS t ON b.book_id = t.book_id WHERE t.quantity > 0;"
+docker exec project-node1-1 mysql -uadmin -p123456 -e "USE bookstore; SELECT b.title, t.location_id, t.quantity FROM books b JOIN (SELECT book_id, location_id, quantity FROM inventory_ny UNION ALL SELECT book_id, location_id, quantity FROM inventory_la UNION ALL SELECT book_id, location_id, quantity FROM inventory_chicago) AS t ON b.book_id = t.book_id WHERE t.quantity > 0;"
 ```
 
 #### Expected Output (Based on Previous Inserts)
@@ -442,9 +442,9 @@ This proves:
 This setup creates a three-node MySQL InnoDB Cluster that provides high availability for your database applications. The primary node (`node1`) accepts write operations while all nodes can handle read operations, and automatic failover ensures your application remains available if a node fails.
 
 
-docker exec project3-node3-1 mysql -uadmin -p123456 -e "SHOW TABLES FROM bookstore;"
+docker exec project-node3-1 mysql -uadmin -p123456 -e "SHOW TABLES FROM bookstore;"
 
-docker exec project3-node2-1 mysql -uadmin -p123456 -e "USE bookstore; DROP TABLE IF EXISTS inventory_ny; DROP TABLE IF EXISTS inventory_chicago; "
+docker exec project-node2-1 mysql -uadmin -p123456 -e "USE bookstore; DROP TABLE IF EXISTS inventory_ny; DROP TABLE IF EXISTS inventory_chicago; "
 
 docker exec project-node3-1 mysql -uadmin -p123456 -e "SET GLOBAL super_read_only = 0; SET GLOBAL read_only = 0; CREATE DATABASE IF NOT EXISTS bookstore; USE bookstore; CREATE TABLE IF NOT EXISTS books (book_id INT PRIMARY KEY, title VARCHAR(255), author VARCHAR(255), genre VARCHAR(100), price DECIMAL(5,2)); CREATE TABLE IF NOT EXISTS locations (location_id INT PRIMARY KEY, city VARCHAR(100), address VARCHAR(255)); CREATE TABLE IF NOT EXISTS inventory_chicago (inventory_id INT PRIMARY KEY, book_id INT, location_id INT, quantity INT);"
 
