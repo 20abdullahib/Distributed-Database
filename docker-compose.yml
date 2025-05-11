@@ -1,0 +1,36 @@
+version: "3.3"
+services:
+  node1:
+    build: .
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    ports:
+      - "3308:3306"
+    volumes:
+      - db-data1:/var/lib/mysql
+
+  node2:
+    build: .
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    ports:
+      - "3309:3306"
+    volumes:
+      - db-data2:/var/lib/mysql
+
+  node3:
+    build: .
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    ports:
+      - "3310:3306"
+    volumes:
+      - db-data3:/var/lib/mysql
+
+volumes:
+  db-data1: {}
+  db-data2: {}
+  db-data3: {}
