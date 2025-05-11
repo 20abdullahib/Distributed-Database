@@ -437,14 +437,5 @@ This proves:
 - [MySQL Shell User Guide](https://dev.mysql.com/doc/mysql-shell/8.0/en/)
 - [Docker Documentation](https://docs.docker.com/)
 
----
 
-This setup creates a three-node MySQL InnoDB Cluster that provides high availability for your database applications. The primary node (`node1`) accepts write operations while all nodes can handle read operations, and automatic failover ensures your application remains available if a node fails.
-
-
-docker exec project-node3-1 mysql -uadmin -p123456 -e "SHOW TABLES FROM bookstore;"
-
-docker exec project-node2-1 mysql -uadmin -p123456 -e "USE bookstore; DROP TABLE IF EXISTS inventory_ny; DROP TABLE IF EXISTS inventory_chicago; "
-
-docker exec project-node3-1 mysql -uadmin -p123456 -e "SET GLOBAL super_read_only = 0; SET GLOBAL read_only = 0; CREATE DATABASE IF NOT EXISTS bookstore; USE bookstore; CREATE TABLE IF NOT EXISTS books (book_id INT PRIMARY KEY, title VARCHAR(255), author VARCHAR(255), genre VARCHAR(100), price DECIMAL(5,2)); CREATE TABLE IF NOT EXISTS locations (location_id INT PRIMARY KEY, city VARCHAR(100), address VARCHAR(255)); CREATE TABLE IF NOT EXISTS inventory_chicago (inventory_id INT PRIMARY KEY, book_id INT, location_id INT, quantity INT);"
 
